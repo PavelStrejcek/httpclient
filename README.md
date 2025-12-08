@@ -33,13 +33,13 @@ cd httpclient
 cp .env.example .env
 ```
 
-3. Start the Docker container:
+4. Start the Docker container:
 
 ```bash
 docker compose up -d
 ```
 
-4. Install dependencies:
+5. Install dependencies:
 
 ```bash
 docker compose exec php composer install
@@ -536,6 +536,8 @@ try {
 ├── docker-compose.yml
 ├── composer.json
 ├── phpunit.xml
+├── .env.example
+├── LICENSE
 └── README.md
 ```
 
