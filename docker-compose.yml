@@ -1,0 +1,12 @@
+services:
+  php:
+    build:
+      context: ./docker/php
+      dockerfile: Dockerfile
+    container_name: php
+    restart: unless-stopped
+    env_file:
+      - .env
+    volumes:
+      - .:/var/www/html:delegated
+    working_dir: /var/www/html
