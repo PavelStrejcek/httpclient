@@ -9,11 +9,14 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @internal
+ */
 #[CoversClass(HttpRequest::class)]
 final class HttpRequestTest extends TestCase
 {
     #[Test]
-    public function it_creates_request_with_all_properties(): void
+    public function itCreatesRequestWithAllProperties(): void
     {
         $request = new HttpRequest(
             url: 'https://api.example.com/users',
@@ -22,22 +25,22 @@ final class HttpRequestTest extends TestCase
             headers: ['Authorization' => 'Bearer token'],
         );
 
-        $this->assertSame('https://api.example.com/users', $request->url);
-        $this->assertSame('POST', $request->method);
-        $this->assertSame(['name' => 'John'], $request->body);
-        $this->assertSame(['Authorization' => 'Bearer token'], $request->headers);
+        self::assertSame('https://api.example.com/users', $request->url);
+        self::assertSame('POST', $request->method);
+        self::assertSame(['name' => 'John'], $request->body);
+        self::assertSame(['Authorization' => 'Bearer token'], $request->headers);
     }
 
     #[Test]
-    public function it_defaults_to_post_method(): void
+    public function itDefaultsToPostMethod(): void
     {
         $request = new HttpRequest('https://api.example.com/users');
 
-        $this->assertSame('POST', $request->method);
+        self::assertSame('POST', $request->method);
     }
 
     #[Test]
-    public function it_creates_post_request_with_factory_method(): void
+    public function itCreatesPostRequestWithFactoryMethod(): void
     {
         $request = HttpRequest::post(
             'https://api.example.com/users',
@@ -45,26 +48,26 @@ final class HttpRequestTest extends TestCase
             ['X-Custom' => 'value'],
         );
 
-        $this->assertSame('https://api.example.com/users', $request->url);
-        $this->assertSame('POST', $request->method);
-        $this->assertSame(['name' => 'John'], $request->body);
-        $this->assertSame('application/json', $request->headers['Content-Type']);
-        $this->assertSame('value', $request->headers['X-Custom']);
+        self::assertSame('https://api.example.com/users', $request->url);
+        self::assertSame('POST', $request->method);
+        self::assertSame(['name' => 'John'], $request->body);
+        self::assertSame('application/json', $request->headers['Content-Type']);
+        self::assertSame('value', $request->headers['X-Custom']);
     }
 
     #[Test]
-    public function it_encodes_body_as_json(): void
+    public function itEncodesBodyAsJson(): void
     {
         $request = new HttpRequest(
             url: 'https://api.example.com',
             body: ['name' => 'John', 'tags' => ['a', 'b']],
         );
 
-        $this->assertSame('{"name":"John","tags":["a","b"]}', $request->getJsonBody());
+        self::assertSame('{"name":"John","tags":["a","b"]}', $request->getJsonBody());
     }
 
     #[Test]
-    public function it_throws_on_non_encodable_body(): void
+    public function itThrowsOnNonEncodableBody(): void
     {
         $resource = fopen('php://memory', 'r');
         $request = new HttpRequest(
@@ -82,7 +85,7 @@ final class HttpRequestTest extends TestCase
     }
 
     #[Test]
-    public function it_creates_new_instance_with_additional_headers(): void
+    public function itCreatesNewInstanceWithAdditionalHeaders(): void
     {
         $original = new HttpRequest(
             url: 'https://api.example.com',
@@ -92,15 +95,15 @@ final class HttpRequestTest extends TestCase
         $modified = $original->withHeaders(['X-New' => 'new-value']);
 
         // Original unchanged
-        $this->assertArrayNotHasKey('X-New', $original->headers);
+        self::assertArrayNotHasKey('X-New', $original->headers);
 
         // New instance has both headers
-        $this->assertSame('value', $modified->headers['X-Original']);
-        $this->assertSame('new-value', $modified->headers['X-New']);
+        self::assertSame('value', $modified->headers['X-Original']);
+        self::assertSame('new-value', $modified->headers['X-New']);
     }
 
     #[Test]
-    public function it_overwrites_headers_with_same_key(): void
+    public function itOverwritesHeadersWithSameKey(): void
     {
         $original = new HttpRequest(
             url: 'https://api.example.com',
@@ -109,11 +112,11 @@ final class HttpRequestTest extends TestCase
 
         $modified = $original->withHeaders(['X-Header' => 'overwritten']);
 
-        $this->assertSame('overwritten', $modified->headers['X-Header']);
+        self::assertSame('overwritten', $modified->headers['X-Header']);
     }
 
     #[Test]
-    public function it_is_immutable(): void
+    public function itIsImmutable(): void
     {
         $request = new HttpRequest(
             url: 'https://api.example.com',
@@ -121,25 +124,25 @@ final class HttpRequestTest extends TestCase
         );
 
         // Readonly class ensures immutability
-        $this->assertSame('https://api.example.com', $request->url);
+        self::assertSame('https://api.example.com', $request->url);
     }
 
     #[Test]
-    public function it_creates_get_request_with_factory_method(): void
+    public function itCreatesGetRequestWithFactoryMethod(): void
     {
         $request = HttpRequest::get(
             'https://api.example.com/users',
             ['Authorization' => 'Bearer token'],
         );
 
-        $this->assertSame('https://api.example.com/users', $request->url);
-        $this->assertSame('GET', $request->method);
-        $this->assertSame([], $request->body);
-        $this->assertSame('Bearer token', $request->headers['Authorization']);
+        self::assertSame('https://api.example.com/users', $request->url);
+        self::assertSame('GET', $request->method);
+        self::assertSame([], $request->body);
+        self::assertSame('Bearer token', $request->headers['Authorization']);
     }
 
     #[Test]
-    public function it_creates_put_request_with_factory_method(): void
+    public function itCreatesPutRequestWithFactoryMethod(): void
     {
         $request = HttpRequest::put(
             'https://api.example.com/users/1',
@@ -147,15 +150,15 @@ final class HttpRequestTest extends TestCase
             ['X-Custom' => 'value'],
         );
 
-        $this->assertSame('https://api.example.com/users/1', $request->url);
-        $this->assertSame('PUT', $request->method);
-        $this->assertSame(['name' => 'Jane'], $request->body);
-        $this->assertSame('application/json', $request->headers['Content-Type']);
-        $this->assertSame('value', $request->headers['X-Custom']);
+        self::assertSame('https://api.example.com/users/1', $request->url);
+        self::assertSame('PUT', $request->method);
+        self::assertSame(['name' => 'Jane'], $request->body);
+        self::assertSame('application/json', $request->headers['Content-Type']);
+        self::assertSame('value', $request->headers['X-Custom']);
     }
 
     #[Test]
-    public function it_creates_patch_request_with_factory_method(): void
+    public function itCreatesPatchRequestWithFactoryMethod(): void
     {
         $request = HttpRequest::patch(
             'https://api.example.com/users/1',
@@ -163,24 +166,24 @@ final class HttpRequestTest extends TestCase
             ['X-Custom' => 'value'],
         );
 
-        $this->assertSame('https://api.example.com/users/1', $request->url);
-        $this->assertSame('PATCH', $request->method);
-        $this->assertSame(['name' => 'Jane'], $request->body);
-        $this->assertSame('application/json', $request->headers['Content-Type']);
-        $this->assertSame('value', $request->headers['X-Custom']);
+        self::assertSame('https://api.example.com/users/1', $request->url);
+        self::assertSame('PATCH', $request->method);
+        self::assertSame(['name' => 'Jane'], $request->body);
+        self::assertSame('application/json', $request->headers['Content-Type']);
+        self::assertSame('value', $request->headers['X-Custom']);
     }
 
     #[Test]
-    public function it_creates_delete_request_with_factory_method(): void
+    public function itCreatesDeleteRequestWithFactoryMethod(): void
     {
         $request = HttpRequest::delete(
             'https://api.example.com/users/1',
             ['Authorization' => 'Bearer token'],
         );
 
-        $this->assertSame('https://api.example.com/users/1', $request->url);
-        $this->assertSame('DELETE', $request->method);
-        $this->assertSame([], $request->body);
-        $this->assertSame('Bearer token', $request->headers['Authorization']);
+        self::assertSame('https://api.example.com/users/1', $request->url);
+        self::assertSame('DELETE', $request->method);
+        self::assertSame([], $request->body);
+        self::assertSame('Bearer token', $request->headers['Authorization']);
     }
 }

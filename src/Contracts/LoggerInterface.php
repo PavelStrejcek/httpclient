@@ -15,7 +15,7 @@ interface LoggerInterface
     /**
      * Log an error message.
      *
-     * @param string $message The log message
+     * @param string               $message The log message
      * @param array<string, mixed> $context Additional context data
      */
     public function error(string $message, array $context = []): void;
@@ -23,7 +23,7 @@ interface LoggerInterface
     /**
      * Log a warning message.
      *
-     * @param string $message The log message
+     * @param string               $message The log message
      * @param array<string, mixed> $context Additional context data
      */
     public function warning(string $message, array $context = []): void;
@@ -31,7 +31,7 @@ interface LoggerInterface
     /**
      * Log an info message.
      *
-     * @param string $message The log message
+     * @param string               $message The log message
      * @param array<string, mixed> $context Additional context data
      */
     public function info(string $message, array $context = []): void;
@@ -39,7 +39,7 @@ interface LoggerInterface
     /**
      * Log a debug message.
      *
-     * @param string $message The log message
+     * @param string               $message The log message
      * @param array<string, mixed> $context Additional context data
      */
     public function debug(string $message, array $context = []): void;

@@ -10,7 +10,7 @@ use HttpClient\Transport\CurlTransport;
 // Create the client with included cURL transport
 $client = new HttpClient(
     transport: new CurlTransport(timeout: 30),
-    logger: new FileLogger('/var/log/http-client.log'),
+    logger: new FileLogger('./var/log/http-client.log'),
     retryStrategy: new ExponentialBackoffStrategy(maxAttempts: 3),
     baseUrl: 'https://postman-echo.com',
     defaultHeaders: ['X-Api-Key' => 'your-api-key'],

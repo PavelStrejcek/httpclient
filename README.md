@@ -416,6 +416,30 @@ The httpbin service is automatically started with `docker compose up -d` and is 
 - **Functional tests** are marked with `#[Group('functional')]` attribute
 - Running `./vendor/bin/phpunit` without arguments runs only unit tests
 
+## Code Style
+
+The project uses [PHP CS Fixer](https://github.com/PHP-CS-Fixer/PHP-CS-Fixer) with `@PhpCsFixer` and `@PhpCsFixer:risky` rule sets.
+
+### Running PHP CS Fixer with Docker
+
+```bash
+# Check code style (dry-run)
+docker compose exec php ./vendor/bin/php-cs-fixer fix --dry-run --diff
+
+# Fix code style
+docker compose exec php ./vendor/bin/php-cs-fixer fix
+```
+
+### Running PHP CS Fixer without Docker
+
+```bash
+# Check code style (dry-run)
+./vendor/bin/php-cs-fixer fix --dry-run --diff
+
+# Fix code style
+./vendor/bin/php-cs-fixer fix
+```
+
 ### Using Mock Transport in Tests
 
 ```php

@@ -15,10 +15,10 @@ use HttpClient\Http\HttpResponse;
 class HttpClientException extends \Exception
 {
     /**
-     * @param string $message The error message
-     * @param int $code The error code (typically HTTP status code)
-     * @param \Throwable|null $previous The previous exception
-     * @param HttpResponse|null $response The HTTP response that caused the error
+     * @param string            $message  The error message
+     * @param int               $code     The error code (typically HTTP status code)
+     * @param null|\Throwable   $previous The previous exception
+     * @param null|HttpResponse $response The HTTP response that caused the error
      */
     public function __construct(
         string $message,
@@ -34,7 +34,7 @@ class HttpClientException extends \Exception
      */
     public static function fromResponse(HttpResponse $response, string $message = ''): self
     {
-        $defaultMessage = sprintf(
+        $defaultMessage = \sprintf(
             'HTTP request failed with status %d: %s',
             $response->statusCode,
             $response->getReasonPhrase(),

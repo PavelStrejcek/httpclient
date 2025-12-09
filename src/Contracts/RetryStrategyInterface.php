@@ -17,8 +17,8 @@ interface RetryStrategyInterface
     /**
      * Determine if the request should be retried based on the response.
      *
-     * @param HttpResponse $response The HTTP response to evaluate
-     * @param int $attemptNumber The current attempt number (1-based)
+     * @param HttpResponse $response      The HTTP response to evaluate
+     * @param int          $attemptNumber The current attempt number (1-based)
      */
     public function shouldRetry(HttpResponse $response, int $attemptNumber): bool;
 
@@ -29,6 +29,7 @@ interface RetryStrategyInterface
      * to avoid overwhelming the remote service.
      *
      * @param int $attemptNumber The current attempt number (1-based)
+     *
      * @return int Delay in milliseconds
      */
     public function getDelayMs(int $attemptNumber): int;

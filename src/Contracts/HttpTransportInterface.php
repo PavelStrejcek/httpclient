@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace HttpClient\Contracts;
 
+use HttpClient\Exception\HttpTransportException;
 use HttpClient\Http\HttpRequest;
 use HttpClient\Http\HttpResponse;
 
@@ -20,8 +21,10 @@ interface HttpTransportInterface
      * Send an HTTP request and return the response.
      *
      * @param HttpRequest $request The HTTP request to send
+     *
      * @return HttpResponse The HTTP response
-     * @throws \HttpClient\Exception\HttpTransportException If the request cannot be sent
+     *
+     * @throws HttpTransportException If the request cannot be sent
      */
     public function send(HttpRequest $request): HttpResponse;
 }

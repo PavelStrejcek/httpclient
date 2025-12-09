@@ -23,9 +23,9 @@ final readonly class HttpResponse
     private const array RETRYABLE_CODES = [408, 429, 500, 502, 503, 504];
 
     /**
-     * @param int $statusCode The HTTP status code
-     * @param string $body The raw response body
-     * @param array<string, string> $headers The response headers
+     * @param int                   $statusCode The HTTP status code
+     * @param string                $body       The raw response body
+     * @param array<string, string> $headers    The response headers
      */
     public function __construct(
         public int $statusCode,
@@ -38,7 +38,7 @@ final readonly class HttpResponse
      */
     public function isSuccessful(): bool
     {
-        return in_array($this->statusCode, self::SUCCESS_CODES, true);
+        return \in_array($this->statusCode, self::SUCCESS_CODES, true);
     }
 
     /**
@@ -54,7 +54,7 @@ final readonly class HttpResponse
      */
     public function isRetryable(): bool
     {
-        return in_array($this->statusCode, self::RETRYABLE_CODES, true);
+        return \in_array($this->statusCode, self::RETRYABLE_CODES, true);
     }
 
     /**
@@ -77,6 +77,7 @@ final readonly class HttpResponse
      * Decode the JSON body into an associative array.
      *
      * @return array<string, mixed>
+     *
      * @throws \JsonException If the body is not valid JSON
      */
     public function json(): array

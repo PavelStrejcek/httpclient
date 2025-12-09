@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace HttpClient\Tests\Functional;
 
 use HttpClient\Exception\HttpClientException;
+use HttpClient\Exception\HttpTransportException;
 use HttpClient\Exception\MaxRetriesExceededException;
 use HttpClient\Http\HttpClient;
-use HttpClient\Logger\FileLogger;
 use HttpClient\Retry\ExponentialBackoffStrategy;
 use HttpClient\Tests\Mock\SpyLogger;
 use HttpClient\Transport\CurlTransport;
@@ -16,12 +16,16 @@ use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
 /**
- * Functional tests using real HTTP calls to httpbin service
+ * Functional tests using real HTTP calls to httpbin service.
  *
  * Uses local httpbin Docker container for reliable testing.
  * Run with: docker compose up -d httpbin
  *
  * @see https://httpbin.org
+ *
+ * @internal
+ *
+ * @coversNothing
  */
 #[Group('functional')]
 final class HttpClientFunctionalTest extends TestCase
@@ -48,22 +52,22 @@ final class HttpClientFunctionalTest extends TestCase
     }
 
     #[Test]
-    public function it_sends_get_request_successfully(): void
+    public function itSendsGetRequestSuccessfully(): void
     {
         $response = $this->client->get('/get');
 
-        $this->assertTrue($response->isSuccessful());
-        $this->assertSame(200, $response->statusCode);
+        self::assertTrue($response->isSuccessful());
+        self::assertSame(200, $response->statusCode);
 
         $data = $response->json();
 
         // httpbin returns request info
-        $this->assertArrayHasKey('headers', $data);
-        $this->assertArrayHasKey('url', $data);
+        self::assertArrayHasKey('headers', $data);
+        self::assertArrayHasKey('url', $data);
     }
 
     #[Test]
-    public function it_sends_post_request_successfully(): void
+    public function itSendsPostRequestSuccessfully(): void
     {
         $payload = [
             'name' => 'John Doe',
@@ -73,21 +77,21 @@ final class HttpClientFunctionalTest extends TestCase
 
         $response = $this->client->post('/post', $payload);
 
-        $this->assertTrue($response->isSuccessful());
-        $this->assertSame(200, $response->statusCode);
+        self::assertTrue($response->isSuccessful());
+        self::assertSame(200, $response->statusCode);
 
         $data = $response->json();
 
         // httpbin.org returns the posted JSON in the 'json' field
         // Use assertEquals instead of assertSame because key order may differ
-        $this->assertEquals($payload, $data['json']);
+        self::assertEquals($payload, $data['json']);
 
         // Verify Content-Type header was sent
-        $this->assertSame('application/json', $data['headers']['Content-Type']);
+        self::assertSame('application/json', $data['headers']['Content-Type']);
     }
 
     #[Test]
-    public function it_sends_put_request_successfully(): void
+    public function itSendsPutRequestSuccessfully(): void
     {
         $payload = [
             'name' => 'Jane Doe',
@@ -96,17 +100,18 @@ final class HttpClientFunctionalTest extends TestCase
 
         $response = $this->client->put('/put', $payload);
 
-        $this->assertTrue($response->isSuccessful());
-        $this->assertSame(200, $response->statusCode);
+        self::assertTrue($response->isSuccessful());
+        self::assertSame(200, $response->statusCode);
 
         $data = $response->json();
 
-        $this->assertEquals($payload, $data['json']);
-        $this->assertSame('application/json', $data['headers']['Content-Type']);
+        // Use assertEquals because key order may differ
+        self::assertEquals($payload, $data['json']);
+        self::assertSame('application/json', $data['headers']['Content-Type']);
     }
 
     #[Test]
-    public function it_sends_patch_request_successfully(): void
+    public function itSendsPatchRequestSuccessfully(): void
     {
         $payload = [
             'name' => 'Updated Name',
@@ -114,45 +119,46 @@ final class HttpClientFunctionalTest extends TestCase
 
         $response = $this->client->patch('/patch', $payload);
 
-        $this->assertTrue($response->isSuccessful());
-        $this->assertSame(200, $response->statusCode);
+        self::assertTrue($response->isSuccessful());
+        self::assertSame(200, $response->statusCode);
 
         $data = $response->json();
 
-        $this->assertEquals($payload, $data['json']);
-        $this->assertSame('application/json', $data['headers']['Content-Type']);
+        // Use assertEquals because key order may differ
+        self::assertEquals($payload, $data['json']);
+        self::assertSame('application/json', $data['headers']['Content-Type']);
     }
 
     #[Test]
-    public function it_sends_delete_request_successfully(): void
+    public function itSendsDeleteRequestSuccessfully(): void
     {
         $response = $this->client->delete('/delete');
 
-        $this->assertTrue($response->isSuccessful());
-        $this->assertSame(200, $response->statusCode);
+        self::assertTrue($response->isSuccessful());
+        self::assertSame(200, $response->statusCode);
 
         $data = $response->json();
 
-        $this->assertArrayHasKey('headers', $data);
-        $this->assertArrayHasKey('url', $data);
+        self::assertArrayHasKey('headers', $data);
+        self::assertArrayHasKey('url', $data);
     }
 
     #[Test]
-    public function it_receives_response_headers(): void
+    public function itReceivesResponseHeaders(): void
     {
         $response = $this->client->post('/response-headers', [
             'X-Custom-Header' => 'test-value',
         ]);
 
-        $this->assertTrue($response->isSuccessful());
+        self::assertTrue($response->isSuccessful());
 
         // httpbin returns headers as query params in the response
         $contentType = $response->getHeader('content-type');
-        $this->assertNotNull($contentType);
+        self::assertNotNull($contentType);
     }
 
     #[Test]
-    public function it_handles_client_error_without_retry(): void
+    public function itHandlesClientErrorWithoutRetry(): void
     {
         // httpbin.org/status/{code} returns the specified status code
         $this->expectException(HttpClientException::class);
@@ -162,7 +168,7 @@ final class HttpClientFunctionalTest extends TestCase
     }
 
     #[Test]
-    public function it_handles_not_found_error(): void
+    public function itHandlesNotFoundError(): void
     {
         $this->expectException(HttpClientException::class);
         $this->expectExceptionCode(404);
@@ -171,7 +177,7 @@ final class HttpClientFunctionalTest extends TestCase
     }
 
     #[Test]
-    public function it_handles_unauthorized_error(): void
+    public function itHandlesUnauthorizedError(): void
     {
         $this->expectException(HttpClientException::class);
         $this->expectExceptionCode(401);
@@ -180,7 +186,7 @@ final class HttpClientFunctionalTest extends TestCase
     }
 
     #[Test]
-    public function it_retries_on_server_error_and_eventually_fails(): void
+    public function itRetriesOnServerErrorAndEventuallyFails(): void
     {
         // Create client with minimal retry delay
         $client = new HttpClient(
@@ -201,17 +207,17 @@ final class HttpClientFunctionalTest extends TestCase
     }
 
     #[Test]
-    public function it_logs_successful_request(): void
+    public function itLogsSuccessfulRequest(): void
     {
         $this->client->post('/post', ['test' => true]);
 
-        $this->assertTrue(
+        self::assertTrue(
             $this->logger->hasLogContaining('HTTP request successful', 'info'),
         );
     }
 
     #[Test]
-    public function it_logs_failed_request(): void
+    public function itLogsFailedRequest(): void
     {
         try {
             $this->client->post('/status/400', []);
@@ -219,33 +225,33 @@ final class HttpClientFunctionalTest extends TestCase
             // Expected
         }
 
-        $this->assertTrue(
+        self::assertTrue(
             $this->logger->hasLogContaining('non-retryable error', 'error'),
         );
     }
 
     #[Test]
-    public function it_sends_custom_headers(): void
+    public function itSendsCustomHeaders(): void
     {
         $response = $this->client->post('/post', ['data' => 'test'], [
             'X-Custom-Header' => 'custom-value',
         ]);
 
-        $this->assertTrue($response->isSuccessful());
+        self::assertTrue($response->isSuccessful());
 
         $data = $response->json();
 
         // httpbin returns request headers in the response
         // Header names might vary in case, so check case-insensitively
         $headers = array_change_key_case($data['headers'], CASE_LOWER);
-        $this->assertSame('custom-value', $headers['x-custom-header']);
+        self::assertSame('custom-value', $headers['x-custom-header']);
 
         // Verify Content-Type is also sent
-        $this->assertSame('application/json', $headers['content-type']);
+        self::assertSame('application/json', $headers['content-type']);
     }
 
     #[Test]
-    public function it_handles_json_response(): void
+    public function itHandlesJsonResponse(): void
     {
         $response = $this->client->post('/post', [
             'items' => ['a', 'b', 'c'],
@@ -256,44 +262,44 @@ final class HttpClientFunctionalTest extends TestCase
 
         $data = $response->json();
 
-        $this->assertIsArray($data);
-        $this->assertArrayHasKey('json', $data);
-        $this->assertSame(['a', 'b', 'c'], $data['json']['items']);
-        $this->assertSame(['key' => 'value'], $data['json']['nested']);
+        self::assertIsArray($data);
+        self::assertArrayHasKey('json', $data);
+        self::assertSame(['a', 'b', 'c'], $data['json']['items']);
+        self::assertSame(['key' => 'value'], $data['json']['nested']);
     }
 
     #[Test]
-    public function it_works_with_empty_body(): void
+    public function itWorksWithEmptyBody(): void
     {
         $response = $this->client->post('/post', []);
 
-        $this->assertTrue($response->isSuccessful());
+        self::assertTrue($response->isSuccessful());
 
         $data = $response->json();
         // httpbin returns null or empty array for empty body
-        $this->assertTrue($data['json'] === null || $data['json'] === []);
+        self::assertTrue(null === $data['json'] || [] === $data['json']);
     }
 
     #[Test]
-    public function it_receives_correct_status_for_created(): void
+    public function itReceivesCorrectStatusForCreated(): void
     {
         // httpbin doesn't have a 201 endpoint directly, but /status/201 works
         try {
             $response = $this->client->post('/status/201', []);
-            $this->assertSame(201, $response->statusCode);
-            $this->assertTrue($response->isSuccessful());
+            self::assertSame(201, $response->statusCode);
+            self::assertTrue($response->isSuccessful());
         } catch (HttpClientException) {
             // Some versions might not return body for 201
-            $this->markTestSkipped('httpbin returned unexpected response for 201');
+            self::markTestSkipped('httpbin returned unexpected response for 201');
         }
     }
 
     #[Test]
-    public function it_handles_large_payload(): void
+    public function itHandlesLargePayload(): void
     {
         $largePayload = [
             'items' => array_map(
-                fn(int $i) => [
+                static fn (int $i) => [
                     'id' => $i,
                     'name' => "Item {$i}",
                     'description' => str_repeat('Lorem ipsum ', 10),
@@ -304,14 +310,14 @@ final class HttpClientFunctionalTest extends TestCase
 
         $response = $this->client->post('/post', $largePayload);
 
-        $this->assertTrue($response->isSuccessful());
+        self::assertTrue($response->isSuccessful());
 
         $data = $response->json();
-        $this->assertCount(100, $data['json']['items']);
+        self::assertCount(100, $data['json']['items']);
     }
 
     #[Test]
-    public function it_respects_timeout(): void
+    public function itRespectsTimeout(): void
     {
         // Create client with very short timeout
         $client = new HttpClient(
@@ -326,18 +332,18 @@ final class HttpClientFunctionalTest extends TestCase
         try {
             // httpbin.org/delay/{n} delays response by n seconds
             $client->post('/delay/5', []);
-            $this->fail('Expected exception was not thrown');
+            self::fail('Expected exception was not thrown');
         } catch (MaxRetriesExceededException $e) {
             // The original transport exception should be the previous exception
-            $this->assertInstanceOf(
-                \HttpClient\Exception\HttpTransportException::class,
+            self::assertInstanceOf(
+                HttpTransportException::class,
                 $e->getPrevious(),
             );
         }
     }
 
     #[Test]
-    public function it_logs_retry_attempts_on_server_error(): void
+    public function itLogsRetryAttemptsOnServerError(): void
     {
         $client = new HttpClient(
             transport: new CurlTransport(timeout: 10),
@@ -357,18 +363,18 @@ final class HttpClientFunctionalTest extends TestCase
         }
 
         // Should have warning logs for failed attempts
-        $this->assertTrue(
+        self::assertTrue(
             $this->logger->hasLogContaining('HTTP request failed, will retry', 'warning'),
         );
 
         // Should have error log for max retries exceeded
-        $this->assertTrue(
+        self::assertTrue(
             $this->logger->hasLogContaining('Maximum retry attempts exceeded', 'error'),
         );
     }
 
     #[Test]
-    public function it_includes_attempt_info_in_exception(): void
+    public function itIncludesAttemptInfoInException(): void
     {
         $client = new HttpClient(
             transport: new CurlTransport(timeout: 10),
@@ -383,11 +389,11 @@ final class HttpClientFunctionalTest extends TestCase
 
         try {
             $client->post('/status/500', []);
-            $this->fail('Expected MaxRetriesExceededException');
+            self::fail('Expected MaxRetriesExceededException');
         } catch (MaxRetriesExceededException $e) {
-            $this->assertSame(2, $e->attempts);
-            $this->assertNotNull($e->response);
-            $this->assertSame(500, $e->response->statusCode);
+            self::assertSame(2, $e->attempts);
+            self::assertNotNull($e->response);
+            self::assertSame(500, $e->response->statusCode);
         }
     }
 }

@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace HttpClient\Tests;
 
 use HttpClient\Exception\HttpClientException;
-use HttpClient\Exception\MaxRetriesExceededException;
 use HttpClient\Exception\HttpTransportException;
+use HttpClient\Exception\MaxRetriesExceededException;
 use HttpClient\Http\HttpClient;
 use HttpClient\Http\HttpResponse;
 use HttpClient\Retry\ExponentialBackoffStrategy;
@@ -17,6 +17,9 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @internal
+ */
 #[CoversClass(HttpClient::class)]
 final class HttpClientTest extends TestCase
 {
@@ -30,82 +33,82 @@ final class HttpClientTest extends TestCase
     }
 
     #[Test]
-    public function it_sends_successful_get_request(): void
+    public function itSendsSuccessfulGetRequest(): void
     {
         $this->transport->queueResponse(new HttpResponse(200, '{"users":[]}'));
 
         $client = $this->createClient();
         $response = $client->get('https://api.example.com/users');
 
-        $this->assertSame(200, $response->statusCode);
-        $this->assertSame('{"users":[]}', $response->body);
-        $this->assertSame(1, $this->transport->getRequestCount());
+        self::assertSame(200, $response->statusCode);
+        self::assertSame('{"users":[]}', $response->body);
+        self::assertSame(1, $this->transport->getRequestCount());
 
         $request = $this->transport->getRequest(0);
-        $this->assertSame('GET', $request?->method);
+        self::assertSame('GET', $request?->method);
     }
 
     #[Test]
-    public function it_sends_successful_post_request(): void
+    public function itSendsSuccessfulPostRequest(): void
     {
         $this->transport->queueResponse(new HttpResponse(200, '{"status":"ok"}'));
 
         $client = $this->createClient();
         $response = $client->post('https://api.example.com/users', ['name' => 'John']);
 
-        $this->assertSame(200, $response->statusCode);
-        $this->assertSame('{"status":"ok"}', $response->body);
-        $this->assertSame(1, $this->transport->getRequestCount());
+        self::assertSame(200, $response->statusCode);
+        self::assertSame('{"status":"ok"}', $response->body);
+        self::assertSame(1, $this->transport->getRequestCount());
     }
 
     #[Test]
-    public function it_sends_successful_put_request(): void
+    public function itSendsSuccessfulPutRequest(): void
     {
         $this->transport->queueResponse(new HttpResponse(200, '{"status":"updated"}'));
 
         $client = $this->createClient();
         $response = $client->put('https://api.example.com/users/1', ['name' => 'Jane']);
 
-        $this->assertSame(200, $response->statusCode);
-        $this->assertSame('{"status":"updated"}', $response->body);
+        self::assertSame(200, $response->statusCode);
+        self::assertSame('{"status":"updated"}', $response->body);
 
         $request = $this->transport->getRequest(0);
-        $this->assertSame('PUT', $request?->method);
-        $this->assertSame('application/json', $request?->headers['Content-Type']);
+        self::assertSame('PUT', $request?->method);
+        self::assertSame('application/json', $request?->headers['Content-Type']);
     }
 
     #[Test]
-    public function it_sends_successful_patch_request(): void
+    public function itSendsSuccessfulPatchRequest(): void
     {
         $this->transport->queueResponse(new HttpResponse(200, '{"status":"patched"}'));
 
         $client = $this->createClient();
         $response = $client->patch('https://api.example.com/users/1', ['name' => 'Jane']);
 
-        $this->assertSame(200, $response->statusCode);
-        $this->assertSame('{"status":"patched"}', $response->body);
+        self::assertSame(200, $response->statusCode);
+        self::assertSame('{"status":"patched"}', $response->body);
 
         $request = $this->transport->getRequest(0);
-        $this->assertSame('PATCH', $request?->method);
-        $this->assertSame('application/json', $request?->headers['Content-Type']);
+        self::assertSame('PATCH', $request?->method);
+        self::assertSame('application/json', $request?->headers['Content-Type']);
     }
 
     #[Test]
-    public function it_sends_successful_delete_request(): void
+    public function itSendsSuccessfulDeleteRequest(): void
     {
         $this->transport->queueResponse(new HttpResponse(204, ''));
 
         $client = $this->createClient();
         $response = $client->delete('https://api.example.com/users/1');
 
-        $this->assertSame(204, $response->statusCode);
+        self::assertSame(204, $response->statusCode);
 
         $request = $this->transport->getRequest(0);
-        $this->assertSame('DELETE', $request?->method);
+        self::assertSame('DELETE', $request?->method);
     }
 
     #[Test]
-    public function it_includes_json_content_type_header(): void
+    public function itIncludesJsonContentTypeHeader(): void
     {
         $this->transport->queueResponse(new HttpResponse(200));
 
@@ -113,11 +116,11 @@ final class HttpClientTest extends TestCase
         $client->post('https://api.example.com/users', ['name' => 'John']);
 
         $request = $this->transport->getRequest(0);
-        $this->assertSame('application/json', $request?->headers['Content-Type']);
+        self::assertSame('application/json', $request?->headers['Content-Type']);
     }
 
     #[Test]
-    public function it_prepends_base_url_to_endpoint(): void
+    public function itPrependsBaseUrlToEndpoint(): void
     {
         $this->transport->queueResponse(new HttpResponse(200));
 
@@ -125,11 +128,11 @@ final class HttpClientTest extends TestCase
         $client->post('/users', ['name' => 'John']);
 
         $request = $this->transport->getRequest(0);
-        $this->assertSame('https://api.example.com/users', $request?->url);
+        self::assertSame('https://api.example.com/users', $request?->url);
     }
 
     #[Test]
-    public function it_handles_base_url_with_trailing_slash(): void
+    public function itHandlesBaseUrlWithTrailingSlash(): void
     {
         $this->transport->queueResponse(new HttpResponse(200));
 
@@ -137,11 +140,11 @@ final class HttpClientTest extends TestCase
         $client->post('/users', ['name' => 'John']);
 
         $request = $this->transport->getRequest(0);
-        $this->assertSame('https://api.example.com/users', $request?->url);
+        self::assertSame('https://api.example.com/users', $request?->url);
     }
 
     #[Test]
-    public function it_merges_default_headers_with_request_headers(): void
+    public function itMergesDefaultHeadersWithRequestHeaders(): void
     {
         $this->transport->queueResponse(new HttpResponse(200));
 
@@ -149,73 +152,78 @@ final class HttpClientTest extends TestCase
         $client->post('https://api.example.com/users', [], ['X-Request-Id' => '123']);
 
         $request = $this->transport->getRequest(0);
-        $this->assertSame('secret', $request?->headers['X-Api-Key']);
-        $this->assertSame('123', $request?->headers['X-Request-Id']);
+        self::assertSame('secret', $request?->headers['X-Api-Key']);
+        self::assertSame('123', $request?->headers['X-Request-Id']);
     }
 
     #[Test]
-    public function it_retries_on_server_error(): void
+    public function itRetriesOnServerError(): void
     {
         $this->transport
             ->queueResponse(new HttpResponse(500, 'Internal Server Error'))
             ->queueResponse(new HttpResponse(500, 'Internal Server Error'))
-            ->queueResponse(new HttpResponse(200, '{"status":"ok"}'));
+            ->queueResponse(new HttpResponse(200, '{"status":"ok"}'))
+        ;
 
         $client = $this->createClient(maxAttempts: 3);
         $response = $client->post('https://api.example.com/users', []);
 
-        $this->assertSame(200, $response->statusCode);
-        $this->assertSame(3, $this->transport->getRequestCount());
+        self::assertSame(200, $response->statusCode);
+        self::assertSame(3, $this->transport->getRequestCount());
     }
 
     #[Test]
-    public function it_retries_on_service_unavailable(): void
+    public function itRetriesOnServiceUnavailable(): void
     {
         $this->transport
             ->queueResponse(new HttpResponse(503, 'Service Unavailable'))
-            ->queueResponse(new HttpResponse(200, '{"status":"ok"}'));
+            ->queueResponse(new HttpResponse(200, '{"status":"ok"}'))
+        ;
 
         $client = $this->createClient(maxAttempts: 3);
         $response = $client->post('https://api.example.com/users', []);
 
-        $this->assertSame(200, $response->statusCode);
-        $this->assertSame(2, $this->transport->getRequestCount());
+        self::assertSame(200, $response->statusCode);
+        self::assertSame(2, $this->transport->getRequestCount());
     }
 
     #[Test]
-    public function it_retries_on_too_many_requests(): void
+    public function itRetriesOnTooManyRequests(): void
     {
         $this->transport
             ->queueResponse(new HttpResponse(429, 'Too Many Requests'))
-            ->queueResponse(new HttpResponse(200, '{"status":"ok"}'));
+            ->queueResponse(new HttpResponse(200, '{"status":"ok"}'))
+        ;
 
         $client = $this->createClient(maxAttempts: 3);
         $response = $client->post('https://api.example.com/users', []);
 
-        $this->assertSame(200, $response->statusCode);
+        self::assertSame(200, $response->statusCode);
     }
 
     #[Test]
-    public function it_retries_on_transport_exception(): void
+    public function itRetriesOnTransportException(): void
     {
         $this->transport
             ->queueException(HttpTransportException::connectionFailed('https://api.example.com'))
-            ->queueResponse(new HttpResponse(200, '{"status":"ok"}'));
+            ->queueResponse(new HttpResponse(200, '{"status":"ok"}'))
+        ;
 
         $client = $this->createClient(maxAttempts: 3);
         $response = $client->post('https://api.example.com/users', []);
 
-        $this->assertSame(200, $response->statusCode);
-        $this->assertSame(2, $this->transport->getRequestCount());
+        self::assertSame(200, $response->statusCode);
+        self::assertSame(2, $this->transport->getRequestCount());
     }
 
     #[Test]
-    public function it_throws_max_retries_exceeded_when_all_attempts_fail(): void
+    public function itThrowsMaxRetriesExceededWhenAllAttemptsFail(): void
     {
         $this->transport
             ->queueResponse(new HttpResponse(500))
             ->queueResponse(new HttpResponse(500))
-            ->queueResponse(new HttpResponse(500));
+            ->queueResponse(new HttpResponse(500))
+        ;
 
         $client = $this->createClient(maxAttempts: 3);
 
@@ -226,25 +234,26 @@ final class HttpClientTest extends TestCase
     }
 
     #[Test]
-    public function it_includes_last_response_in_max_retries_exception(): void
+    public function itIncludesLastResponseInMaxRetriesException(): void
     {
         $this->transport
             ->queueResponse(new HttpResponse(503, 'Service Unavailable'))
-            ->queueResponse(new HttpResponse(503, 'Service Unavailable'));
+            ->queueResponse(new HttpResponse(503, 'Service Unavailable'))
+        ;
 
         $client = $this->createClient(maxAttempts: 2);
 
         try {
             $client->post('https://api.example.com/users', []);
-            $this->fail('Expected MaxRetriesExceededException');
+            self::fail('Expected MaxRetriesExceededException');
         } catch (MaxRetriesExceededException $e) {
-            $this->assertSame(503, $e->response?->statusCode);
-            $this->assertSame(2, $e->attempts);
+            self::assertSame(503, $e->response?->statusCode);
+            self::assertSame(2, $e->attempts);
         }
     }
 
     #[Test]
-    public function it_does_not_retry_on_client_error(): void
+    public function itDoesNotRetryOnClientError(): void
     {
         $this->transport->queueResponse(new HttpResponse(400, 'Bad Request'));
 
@@ -257,7 +266,7 @@ final class HttpClientTest extends TestCase
     }
 
     #[Test]
-    public function it_does_not_retry_on_not_found(): void
+    public function itDoesNotRetryOnNotFound(): void
     {
         $this->transport->queueResponse(new HttpResponse(404, 'Not Found'));
 
@@ -269,8 +278,8 @@ final class HttpClientTest extends TestCase
     }
 
     #[Test]
-    #[DataProvider('nonRetryableStatusCodesProvider')]
-    public function it_does_not_retry_on_non_retryable_status_codes(int $statusCode): void
+    #[DataProvider('provideItDoesNotRetryOnNonRetryableStatusCodesCases')]
+    public function itDoesNotRetryOnNonRetryableStatusCodes(int $statusCode): void
     {
         $this->transport->queueResponse(new HttpResponse($statusCode));
 
@@ -285,7 +294,7 @@ final class HttpClientTest extends TestCase
     /**
      * @return array<string, array{int}>
      */
-    public static function nonRetryableStatusCodesProvider(): array
+    public static function provideItDoesNotRetryOnNonRetryableStatusCodesCases(): iterable
     {
         return [
             'Bad Request' => [400],
@@ -299,31 +308,32 @@ final class HttpClientTest extends TestCase
     }
 
     #[Test]
-    public function it_logs_successful_request(): void
+    public function itLogsSuccessfulRequest(): void
     {
         $this->transport->queueResponse(new HttpResponse(200));
 
         $client = $this->createClient();
         $client->post('https://api.example.com/users', []);
 
-        $this->assertTrue($this->logger->hasLogContaining('HTTP request successful', 'info'));
+        self::assertTrue($this->logger->hasLogContaining('HTTP request successful', 'info'));
     }
 
     #[Test]
-    public function it_logs_failed_attempts(): void
+    public function itLogsFailedAttempts(): void
     {
         $this->transport
             ->queueResponse(new HttpResponse(500))
-            ->queueResponse(new HttpResponse(200));
+            ->queueResponse(new HttpResponse(200))
+        ;
 
         $client = $this->createClient(maxAttempts: 3);
         $client->post('https://api.example.com/users', []);
 
-        $this->assertTrue($this->logger->hasLogContaining('HTTP request failed, will retry', 'warning'));
+        self::assertTrue($this->logger->hasLogContaining('HTTP request failed, will retry', 'warning'));
     }
 
     #[Test]
-    public function it_logs_non_retryable_errors(): void
+    public function itLogsNonRetryableErrors(): void
     {
         $this->transport->queueResponse(new HttpResponse(400, 'Bad Request'));
 
@@ -335,15 +345,16 @@ final class HttpClientTest extends TestCase
             // Expected
         }
 
-        $this->assertTrue($this->logger->hasLogContaining('non-retryable error', 'error'));
+        self::assertTrue($this->logger->hasLogContaining('non-retryable error', 'error'));
     }
 
     #[Test]
-    public function it_logs_max_retries_exceeded(): void
+    public function itLogsMaxRetriesExceeded(): void
     {
         $this->transport
             ->queueResponse(new HttpResponse(500))
-            ->queueResponse(new HttpResponse(500));
+            ->queueResponse(new HttpResponse(500))
+        ;
 
         $client = $this->createClient(maxAttempts: 2);
 
@@ -353,24 +364,25 @@ final class HttpClientTest extends TestCase
             // Expected
         }
 
-        $this->assertTrue($this->logger->hasLogContaining('Maximum retry attempts exceeded', 'error'));
+        self::assertTrue($this->logger->hasLogContaining('Maximum retry attempts exceeded', 'error'));
     }
 
     #[Test]
-    public function it_logs_transport_errors(): void
+    public function itLogsTransportErrors(): void
     {
         $this->transport
             ->queueException(HttpTransportException::connectionFailed('https://api.example.com'))
-            ->queueResponse(new HttpResponse(200));
+            ->queueResponse(new HttpResponse(200))
+        ;
 
         $client = $this->createClient(maxAttempts: 2);
         $client->post('https://api.example.com/users', []);
 
-        $this->assertTrue($this->logger->hasLogContaining('HTTP transport error', 'error'));
+        self::assertTrue($this->logger->hasLogContaining('HTTP transport error', 'error'));
     }
 
     #[Test]
-    public function it_logs_context_with_request_details(): void
+    public function itLogsContextWithRequestDetails(): void
     {
         $this->transport->queueResponse(new HttpResponse(200));
 
@@ -378,12 +390,12 @@ final class HttpClientTest extends TestCase
         $client->post('https://api.example.com/users', []);
 
         $infoLogs = $this->logger->getLogsByLevel('info');
-        $this->assertNotEmpty($infoLogs);
+        self::assertNotEmpty($infoLogs);
 
         $context = $infoLogs[0]['context'];
-        $this->assertSame('POST', $context['method']);
-        $this->assertSame('https://api.example.com/users', $context['url']);
-        $this->assertSame(200, $context['status_code']);
+        self::assertSame('POST', $context['method']);
+        self::assertSame('https://api.example.com/users', $context['url']);
+        self::assertSame(200, $context['status_code']);
     }
 
     /**

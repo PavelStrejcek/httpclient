@@ -14,33 +14,21 @@ use HttpClient\Contracts\LoggerInterface;
  */
 final class NullLogger implements LoggerInterface
 {
-    /**
-     * @inheritDoc
-     */
     public function error(string $message, array $context = []): void
     {
         // Intentionally empty - null object pattern
     }
 
-    /**
-     * @inheritDoc
-     */
     public function warning(string $message, array $context = []): void
     {
         // Intentionally empty - null object pattern
     }
 
-    /**
-     * @inheritDoc
-     */
     public function info(string $message, array $context = []): void
     {
         // Intentionally empty - null object pattern
     }
 
-    /**
-     * @inheritDoc
-     */
     public function debug(string $message, array $context = []): void
     {
         // Intentionally empty - null object pattern

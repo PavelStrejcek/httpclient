@@ -10,47 +10,50 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @internal
+ */
 #[CoversClass(HttpResponse::class)]
 final class HttpResponseTest extends TestCase
 {
     #[Test]
-    public function it_stores_status_code_and_body(): void
+    public function itStoresStatusCodeAndBody(): void
     {
         $response = new HttpResponse(200, '{"data":"test"}');
 
-        $this->assertSame(200, $response->statusCode);
-        $this->assertSame('{"data":"test"}', $response->body);
+        self::assertSame(200, $response->statusCode);
+        self::assertSame('{"data":"test"}', $response->body);
     }
 
     #[Test]
-    public function it_stores_headers(): void
+    public function itStoresHeaders(): void
     {
         $response = new HttpResponse(200, '', ['content-type' => 'application/json']);
 
-        $this->assertSame('application/json', $response->getHeader('content-type'));
+        self::assertSame('application/json', $response->getHeader('content-type'));
     }
 
     #[Test]
-    public function it_returns_null_for_missing_header(): void
+    public function itReturnsNullForMissingHeader(): void
     {
         $response = new HttpResponse(200);
 
-        $this->assertNull($response->getHeader('x-missing'));
+        self::assertNull($response->getHeader('x-missing'));
     }
 
     #[Test]
-    #[DataProvider('successfulStatusCodesProvider')]
-    public function it_identifies_successful_responses(int $statusCode): void
+    #[DataProvider('provideItIdentifiesSuccessfulResponsesCases')]
+    public function itIdentifiesSuccessfulResponses(int $statusCode): void
     {
         $response = new HttpResponse($statusCode);
 
-        $this->assertTrue($response->isSuccessful());
+        self::assertTrue($response->isSuccessful());
     }
 
     /**
      * @return array<string, array{int}>
      */
-    public static function successfulStatusCodesProvider(): array
+    public static function provideItIdentifiesSuccessfulResponsesCases(): iterable
     {
         return [
             'OK' => [200],
@@ -61,19 +64,19 @@ final class HttpResponseTest extends TestCase
     }
 
     #[Test]
-    #[DataProvider('clientErrorStatusCodesProvider')]
-    public function it_identifies_client_errors(int $statusCode): void
+    #[DataProvider('provideItIdentifiesClientErrorsCases')]
+    public function itIdentifiesClientErrors(int $statusCode): void
     {
         $response = new HttpResponse($statusCode);
 
-        $this->assertTrue($response->isClientError());
-        $this->assertFalse($response->isSuccessful());
+        self::assertTrue($response->isClientError());
+        self::assertFalse($response->isSuccessful());
     }
 
     /**
      * @return array<string, array{int}>
      */
-    public static function clientErrorStatusCodesProvider(): array
+    public static function provideItIdentifiesClientErrorsCases(): iterable
     {
         return [
             'Bad Request' => [400],
@@ -85,19 +88,19 @@ final class HttpResponseTest extends TestCase
     }
 
     #[Test]
-    #[DataProvider('serverErrorStatusCodesProvider')]
-    public function it_identifies_server_errors(int $statusCode): void
+    #[DataProvider('provideItIdentifiesServerErrorsCases')]
+    public function itIdentifiesServerErrors(int $statusCode): void
     {
         $response = new HttpResponse($statusCode);
 
-        $this->assertTrue($response->isServerError());
-        $this->assertFalse($response->isSuccessful());
+        self::assertTrue($response->isServerError());
+        self::assertFalse($response->isSuccessful());
     }
 
     /**
      * @return array<string, array{int}>
      */
-    public static function serverErrorStatusCodesProvider(): array
+    public static function provideItIdentifiesServerErrorsCases(): iterable
     {
         return [
             'Internal Server Error' => [500],
@@ -108,18 +111,18 @@ final class HttpResponseTest extends TestCase
     }
 
     #[Test]
-    #[DataProvider('retryableStatusCodesProvider')]
-    public function it_identifies_retryable_responses(int $statusCode): void
+    #[DataProvider('provideItIdentifiesRetryableResponsesCases')]
+    public function itIdentifiesRetryableResponses(int $statusCode): void
     {
         $response = new HttpResponse($statusCode);
 
-        $this->assertTrue($response->isRetryable());
+        self::assertTrue($response->isRetryable());
     }
 
     /**
      * @return array<string, array{int}>
      */
-    public static function retryableStatusCodesProvider(): array
+    public static function provideItIdentifiesRetryableResponsesCases(): iterable
     {
         return [
             'Request Timeout' => [408],
@@ -132,17 +135,17 @@ final class HttpResponseTest extends TestCase
     }
 
     #[Test]
-    public function it_decodes_json_body(): void
+    public function itDecodesJsonBody(): void
     {
         $response = new HttpResponse(200, '{"name":"John","age":30}');
 
         $data = $response->json();
 
-        $this->assertSame(['name' => 'John', 'age' => 30], $data);
+        self::assertSame(['name' => 'John', 'age' => 30], $data);
     }
 
     #[Test]
-    public function it_throws_on_invalid_json(): void
+    public function itThrowsOnInvalidJson(): void
     {
         $response = new HttpResponse(200, 'not json');
 
@@ -152,20 +155,20 @@ final class HttpResponseTest extends TestCase
     }
 
     #[Test]
-    public function it_returns_reason_phrase_for_known_status_codes(): void
+    public function itReturnsReasonPhraseForKnownStatusCodes(): void
     {
-        $this->assertSame('OK', (new HttpResponse(200))->getReasonPhrase());
-        $this->assertSame('Created', (new HttpResponse(201))->getReasonPhrase());
-        $this->assertSame('Bad Request', (new HttpResponse(400))->getReasonPhrase());
-        $this->assertSame('Not Found', (new HttpResponse(404))->getReasonPhrase());
-        $this->assertSame('Internal Server Error', (new HttpResponse(500))->getReasonPhrase());
+        self::assertSame('OK', (new HttpResponse(200))->getReasonPhrase());
+        self::assertSame('Created', (new HttpResponse(201))->getReasonPhrase());
+        self::assertSame('Bad Request', (new HttpResponse(400))->getReasonPhrase());
+        self::assertSame('Not Found', (new HttpResponse(404))->getReasonPhrase());
+        self::assertSame('Internal Server Error', (new HttpResponse(500))->getReasonPhrase());
     }
 
     #[Test]
-    public function it_returns_unknown_for_undefined_status_codes(): void
+    public function itReturnsUnknownForUndefinedStatusCodes(): void
     {
         $response = new HttpResponse(418); // I'm a teapot
 
-        $this->assertSame('Unknown', $response->getReasonPhrase());
+        self::assertSame('Unknown', $response->getReasonPhrase());
     }
 }

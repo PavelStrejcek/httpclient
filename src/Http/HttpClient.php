@@ -45,11 +45,11 @@ final class HttpClient
     private readonly RetryStrategyInterface $retryStrategy;
 
     /**
-     * @param HttpTransportInterface $transport The HTTP transport implementation
-     * @param LoggerInterface|null $logger Logger for error and debug messages
-     * @param RetryStrategyInterface|null $retryStrategy Strategy for retry logic
-     * @param string $baseUrl Optional base URL to prepend to all requests
-     * @param array<string, string> $defaultHeaders Default headers for all requests
+     * @param HttpTransportInterface      $transport      The HTTP transport implementation
+     * @param null|LoggerInterface        $logger         Logger for error and debug messages
+     * @param null|RetryStrategyInterface $retryStrategy  Strategy for retry logic
+     * @param string                      $baseUrl        Optional base URL to prepend to all requests
+     * @param array<string, string>       $defaultHeaders Default headers for all requests
      */
     public function __construct(
         private readonly HttpTransportInterface $transport,
@@ -65,11 +65,13 @@ final class HttpClient
     /**
      * Send a GET request to the specified endpoint.
      *
-     * @param string $endpoint The API endpoint (will be appended to base URL if set)
-     * @param array<string, string> $headers Additional headers for this request
+     * @param string                $endpoint The API endpoint (will be appended to base URL if set)
+     * @param array<string, string> $headers  Additional headers for this request
+     *
      * @return HttpResponse The successful response
+     *
      * @throws MaxRetriesExceededException If all retry attempts fail
-     * @throws HttpClientException If a non-retryable error occurs
+     * @throws HttpClientException         If a non-retryable error occurs
      */
     public function get(string $endpoint, array $headers = []): HttpResponse
     {
@@ -84,12 +86,14 @@ final class HttpClient
     /**
      * Send a POST request to the specified endpoint.
      *
-     * @param string $endpoint The API endpoint (will be appended to base URL if set)
-     * @param array<string, mixed> $body The request body as an associative array
-     * @param array<string, string> $headers Additional headers for this request
+     * @param string                $endpoint The API endpoint (will be appended to base URL if set)
+     * @param array<string, mixed>  $body     The request body as an associative array
+     * @param array<string, string> $headers  Additional headers for this request
+     *
      * @return HttpResponse The successful response
+     *
      * @throws MaxRetriesExceededException If all retry attempts fail
-     * @throws HttpClientException If a non-retryable error occurs
+     * @throws HttpClientException         If a non-retryable error occurs
      */
     public function post(string $endpoint, array $body = [], array $headers = []): HttpResponse
     {
@@ -104,12 +108,14 @@ final class HttpClient
     /**
      * Send a PUT request to the specified endpoint.
      *
-     * @param string $endpoint The API endpoint (will be appended to base URL if set)
-     * @param array<string, mixed> $body The request body as an associative array
-     * @param array<string, string> $headers Additional headers for this request
+     * @param string                $endpoint The API endpoint (will be appended to base URL if set)
+     * @param array<string, mixed>  $body     The request body as an associative array
+     * @param array<string, string> $headers  Additional headers for this request
+     *
      * @return HttpResponse The successful response
+     *
      * @throws MaxRetriesExceededException If all retry attempts fail
-     * @throws HttpClientException If a non-retryable error occurs
+     * @throws HttpClientException         If a non-retryable error occurs
      */
     public function put(string $endpoint, array $body = [], array $headers = []): HttpResponse
     {
@@ -124,12 +130,14 @@ final class HttpClient
     /**
      * Send a PATCH request to the specified endpoint.
      *
-     * @param string $endpoint The API endpoint (will be appended to base URL if set)
-     * @param array<string, mixed> $body The request body as an associative array
-     * @param array<string, string> $headers Additional headers for this request
+     * @param string                $endpoint The API endpoint (will be appended to base URL if set)
+     * @param array<string, mixed>  $body     The request body as an associative array
+     * @param array<string, string> $headers  Additional headers for this request
+     *
      * @return HttpResponse The successful response
+     *
      * @throws MaxRetriesExceededException If all retry attempts fail
-     * @throws HttpClientException If a non-retryable error occurs
+     * @throws HttpClientException         If a non-retryable error occurs
      */
     public function patch(string $endpoint, array $body = [], array $headers = []): HttpResponse
     {
@@ -144,11 +152,13 @@ final class HttpClient
     /**
      * Send a DELETE request to the specified endpoint.
      *
-     * @param string $endpoint The API endpoint (will be appended to base URL if set)
-     * @param array<string, string> $headers Additional headers for this request
+     * @param string                $endpoint The API endpoint (will be appended to base URL if set)
+     * @param array<string, string> $headers  Additional headers for this request
+     *
      * @return HttpResponse The successful response
+     *
      * @throws MaxRetriesExceededException If all retry attempts fail
-     * @throws HttpClientException If a non-retryable error occurs
+     * @throws HttpClientException         If a non-retryable error occurs
      */
     public function delete(string $endpoint, array $headers = []): HttpResponse
     {
@@ -164,9 +174,11 @@ final class HttpClient
      * Send a request with the configured retry strategy.
      *
      * @param HttpRequest $request The request to send
+     *
      * @return HttpResponse The successful response
+     *
      * @throws MaxRetriesExceededException If all retry attempts fail
-     * @throws HttpClientException If a non-retryable error occurs
+     * @throws HttpClientException         If a non-retryable error occurs
      */
     public function send(HttpRequest $request): HttpResponse
     {
@@ -185,7 +197,7 @@ final class HttpClient
         $lastException = null;
         $maxAttempts = $this->retryStrategy->getMaxAttempts();
 
-        for ($attempt = 1; $attempt <= $maxAttempts; $attempt++) {
+        for ($attempt = 1; $attempt <= $maxAttempts; ++$attempt) {
             try {
                 $this->logAttempt($request, $attempt, $maxAttempts);
 
@@ -194,15 +206,17 @@ final class HttpClient
 
                 if ($response->isSuccessful()) {
                     $this->logSuccess($request, $response, $attempt);
+
                     return $response;
                 }
 
                 // Check if this is a non-retryable error (e.g., 4xx client errors)
                 if (!$this->retryStrategy->isRetryableResponse($response)) {
                     $this->logNonRetryableError($request, $response);
+
                     throw HttpClientException::fromResponse(
                         $response,
-                        sprintf('Non-retryable error on attempt %d', $attempt),
+                        \sprintf('Non-retryable error on attempt %d', $attempt),
                     );
                 }
 
@@ -235,11 +249,11 @@ final class HttpClient
      */
     private function buildUrl(string $endpoint): string
     {
-        if ($this->baseUrl === '') {
+        if ('' === $this->baseUrl) {
             return $endpoint;
         }
 
-        return rtrim($this->baseUrl, '/') . '/' . ltrim($endpoint, '/');
+        return rtrim($this->baseUrl, '/').'/'.ltrim($endpoint, '/');
     }
 
     /**

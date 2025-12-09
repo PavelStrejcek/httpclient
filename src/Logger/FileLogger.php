@@ -27,17 +27,11 @@ final class FileLogger implements LoggerInterface
         $this->ensureDirectoryExists();
     }
 
-    /**
-     * @inheritDoc
-     */
     public function error(string $message, array $context = []): void
     {
         $this->log('ERROR', $message, $context);
     }
 
-    /**
-     * @inheritDoc
-     */
     public function warning(string $message, array $context = []): void
     {
         if ($this->shouldLog('warning')) {
@@ -45,9 +39,6 @@ final class FileLogger implements LoggerInterface
         }
     }
 
-    /**
-     * @inheritDoc
-     */
     public function info(string $message, array $context = []): void
     {
         if ($this->shouldLog('info')) {
@@ -55,9 +46,6 @@ final class FileLogger implements LoggerInterface
         }
     }
 
-    /**
-     * @inheritDoc
-     */
     public function debug(string $message, array $context = []): void
     {
         if ($this->shouldLog('debug')) {
@@ -68,16 +56,16 @@ final class FileLogger implements LoggerInterface
     /**
      * Write a log entry to the file.
      *
-     * @param string $level The log level
-     * @param string $message The log message
+     * @param string               $level   The log level
+     * @param string               $message The log message
      * @param array<string, mixed> $context Additional context
      */
     private function log(string $level, string $message, array $context): void
     {
         $timestamp = (new \DateTimeImmutable())->format(self::DATE_FORMAT);
-        $contextString = $context !== [] ? ' ' . json_encode($context, JSON_UNESCAPED_SLASHES) : '';
+        $contextString = [] !== $context ? ' '.json_encode($context, JSON_UNESCAPED_SLASHES) : '';
 
-        $entry = sprintf(
+        $entry = \sprintf(
             "[%s] [%s] %s%s\n",
             $timestamp,
             $level,
@@ -91,7 +79,7 @@ final class FileLogger implements LoggerInterface
     /**
      * Interpolate context values into the message placeholders.
      *
-     * @param string $message The message with placeholders
+     * @param string               $message The message with placeholders
      * @param array<string, mixed> $context The context values
      */
     private function interpolate(string $message, array $context): string
@@ -99,8 +87,8 @@ final class FileLogger implements LoggerInterface
         $replace = [];
 
         foreach ($context as $key => $value) {
-            if (is_string($value) || (is_object($value) && method_exists($value, '__toString'))) {
-                $replace['{' . $key . '}'] = (string) $value;
+            if (\is_string($value) || (\is_object($value) && method_exists($value, '__toString'))) {
+                $replace['{'.$key.'}'] = (string) $value;
             }
         }
 
@@ -114,7 +102,7 @@ final class FileLogger implements LoggerInterface
     {
         $handle = fopen($this->filePath, 'a');
 
-        if ($handle === false) {
+        if (false === $handle) {
             return;
         }
 
@@ -133,7 +121,7 @@ final class FileLogger implements LoggerInterface
      */
     private function ensureDirectoryExists(): void
     {
-        $directory = dirname($this->filePath);
+        $directory = \dirname($this->filePath);
 
         if (!is_dir($directory)) {
             mkdir($directory, 0755, true);

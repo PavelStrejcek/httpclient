@@ -13,9 +13,9 @@ namespace HttpClient\Http;
 final readonly class HttpRequest
 {
     /**
-     * @param string $url The target URL
-     * @param string $method The HTTP method (GET, POST, PUT, DELETE, etc.)
-     * @param array<string, mixed> $body The request body as an associative array
+     * @param string                $url     The target URL
+     * @param string                $method  The HTTP method (GET, POST, PUT, DELETE, etc.)
+     * @param array<string, mixed>  $body    The request body as an associative array
      * @param array<string, string> $headers Additional HTTP headers
      */
     public function __construct(
@@ -28,7 +28,7 @@ final readonly class HttpRequest
     /**
      * Create a new GET request.
      *
-     * @param string $url The target URL
+     * @param string                $url     The target URL
      * @param array<string, string> $headers Additional headers
      */
     public static function get(string $url, array $headers = []): self
@@ -44,8 +44,8 @@ final readonly class HttpRequest
     /**
      * Create a new POST request.
      *
-     * @param string $url The target URL
-     * @param array<string, mixed> $body The request body
+     * @param string                $url     The target URL
+     * @param array<string, mixed>  $body    The request body
      * @param array<string, string> $headers Additional headers
      */
     public static function post(string $url, array $body = [], array $headers = []): self
@@ -61,8 +61,8 @@ final readonly class HttpRequest
     /**
      * Create a new PUT request.
      *
-     * @param string $url The target URL
-     * @param array<string, mixed> $body The request body
+     * @param string                $url     The target URL
+     * @param array<string, mixed>  $body    The request body
      * @param array<string, string> $headers Additional headers
      */
     public static function put(string $url, array $body = [], array $headers = []): self
@@ -78,8 +78,8 @@ final readonly class HttpRequest
     /**
      * Create a new PATCH request.
      *
-     * @param string $url The target URL
-     * @param array<string, mixed> $body The request body
+     * @param string                $url     The target URL
+     * @param array<string, mixed>  $body    The request body
      * @param array<string, string> $headers Additional headers
      */
     public static function patch(string $url, array $body = [], array $headers = []): self
@@ -95,7 +95,7 @@ final readonly class HttpRequest
     /**
      * Create a new DELETE request.
      *
-     * @param string $url The target URL
+     * @param string                $url     The target URL
      * @param array<string, string> $headers Additional headers
      */
     public static function delete(string $url, array $headers = []): self

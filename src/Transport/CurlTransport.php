@@ -17,7 +17,7 @@ use HttpClient\Http\HttpResponse;
 final readonly class CurlTransport implements HttpTransportInterface
 {
     /**
-     * @param int $timeout Connection timeout in seconds
+     * @param int  $timeout   Connection timeout in seconds
      * @param bool $verifySSL Whether to verify SSL certificates
      */
     public function __construct(
@@ -25,14 +25,11 @@ final readonly class CurlTransport implements HttpTransportInterface
         private bool $verifySSL = true,
     ) {}
 
-    /**
-     * @inheritDoc
-     */
     public function send(HttpRequest $request): HttpResponse
     {
         $ch = curl_init();
 
-        if ($ch === false) {
+        if (false === $ch) {
             throw new HttpTransportException('Failed to initialize cURL');
         }
 
@@ -40,18 +37,16 @@ final readonly class CurlTransport implements HttpTransportInterface
 
         $response = curl_exec($ch);
 
-        if ($response === false) {
+        if (false === $response) {
             $this->handleCurlError($ch, $request->url);
         }
 
-        /** @var string $response */
+        // @var string $response
         return $this->parseResponse($ch, $response);
     }
 
     /**
      * Configure cURL options for the request.
-     *
-     * @param \CurlHandle $ch
      */
     private function configureRequest(\CurlHandle $ch, HttpRequest $request): void
     {
@@ -73,8 +68,6 @@ final readonly class CurlTransport implements HttpTransportInterface
 
     /**
      * Configure HTTP method and body.
-     *
-     * @param \CurlHandle $ch
      */
     private function configureMethod(\CurlHandle $ch, HttpRequest $request): void
     {
@@ -87,55 +80,44 @@ final readonly class CurlTransport implements HttpTransportInterface
         };
     }
 
-    /**
-     * @param \CurlHandle $ch
-     */
     private function configurePost(\CurlHandle $ch, HttpRequest $request): void
     {
         curl_setopt($ch, CURLOPT_POST, true);
 
-        if ($request->body !== []) {
+        if ([] !== $request->body) {
             curl_setopt($ch, CURLOPT_POSTFIELDS, $request->getJsonBody());
         }
     }
 
-    /**
-     * @param \CurlHandle $ch
-     */
     private function configurePut(\CurlHandle $ch, HttpRequest $request): void
     {
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'PUT');
 
-        if ($request->body !== []) {
+        if ([] !== $request->body) {
             curl_setopt($ch, CURLOPT_POSTFIELDS, $request->getJsonBody());
         }
     }
 
-    /**
-     * @param \CurlHandle $ch
-     */
     private function configurePatch(\CurlHandle $ch, HttpRequest $request): void
     {
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'PATCH');
 
-        if ($request->body !== []) {
+        if ([] !== $request->body) {
             curl_setopt($ch, CURLOPT_POSTFIELDS, $request->getJsonBody());
         }
     }
 
     /**
      * Configure request headers.
-     *
-     * @param \CurlHandle $ch
      */
     private function configureHeaders(\CurlHandle $ch, HttpRequest $request): void
     {
-        if ($request->headers === []) {
+        if ([] === $request->headers) {
             return;
         }
 
         $headers = array_map(
-            static fn(string $key, string $value): string => "{$key}: {$value}",
+            static fn (string $key, string $value): string => "{$key}: {$value}",
             array_keys($request->headers),
             array_values($request->headers),
         );
@@ -146,7 +128,6 @@ final readonly class CurlTransport implements HttpTransportInterface
     /**
      * Handle cURL errors.
      *
-     * @param \CurlHandle $ch
      * @throws HttpTransportException
      */
     private function handleCurlError(\CurlHandle $ch, string $url): never
@@ -163,8 +144,6 @@ final readonly class CurlTransport implements HttpTransportInterface
 
     /**
      * Parse cURL response into HttpResponse object.
-     *
-     * @param \CurlHandle $ch
      */
     private function parseResponse(\CurlHandle $ch, string $response): HttpResponse
     {

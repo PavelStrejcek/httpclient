@@ -25,11 +25,11 @@ use HttpClient\Http\HttpResponse;
 final readonly class ExponentialBackoffStrategy implements RetryStrategyInterface
 {
     /**
-     * @param int $maxAttempts Maximum number of retry attempts (default: 3)
-     * @param int $baseDelayMs Base delay in milliseconds (default: 100)
-     * @param float $multiplier Multiplier for exponential increase (default: 2.0)
-     * @param int $maxDelayMs Maximum delay cap in milliseconds (default: 30000)
-     * @param bool $useJitter Whether to add random jitter to prevent thundering herd (default: true)
+     * @param int        $maxAttempts          Maximum number of retry attempts (default: 3)
+     * @param int        $baseDelayMs          Base delay in milliseconds (default: 100)
+     * @param float      $multiplier           Multiplier for exponential increase (default: 2.0)
+     * @param int        $maxDelayMs           Maximum delay cap in milliseconds (default: 30000)
+     * @param bool       $useJitter            Whether to add random jitter to prevent thundering herd (default: true)
      * @param array<int> $retryableStatusCodes HTTP status codes that should trigger a retry
      */
     public function __construct(
@@ -41,21 +41,15 @@ final readonly class ExponentialBackoffStrategy implements RetryStrategyInterfac
         private array $retryableStatusCodes = [408, 429, 500, 502, 503, 504],
     ) {}
 
-    /**
-     * @inheritDoc
-     */
     public function shouldRetry(HttpResponse $response, int $attemptNumber): bool
     {
         if ($attemptNumber >= $this->maxAttempts) {
             return false;
         }
 
-        return in_array($response->statusCode, $this->retryableStatusCodes, true);
+        return \in_array($response->statusCode, $this->retryableStatusCodes, true);
     }
 
-    /**
-     * @inheritDoc
-     */
     public function getDelayMs(int $attemptNumber): int
     {
         $delay = (int) ($this->baseDelayMs * ($this->multiplier ** $attemptNumber));
@@ -68,20 +62,14 @@ final readonly class ExponentialBackoffStrategy implements RetryStrategyInterfac
         return min($delay, $this->maxDelayMs);
     }
 
-    /**
-     * @inheritDoc
-     */
     public function getMaxAttempts(): int
     {
         return $this->maxAttempts;
     }
 
-    /**
-     * @inheritDoc
-     */
     public function isRetryableResponse(HttpResponse $response): bool
     {
-        return in_array($response->statusCode, $this->retryableStatusCodes, true);
+        return \in_array($response->statusCode, $this->retryableStatusCodes, true);
     }
 
     /**

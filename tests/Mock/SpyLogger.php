@@ -16,33 +16,21 @@ final class SpyLogger implements LoggerInterface
     /** @var array<array{level: string, message: string, context: array<string, mixed>}> */
     private array $logs = [];
 
-    /**
-     * @inheritDoc
-     */
     public function error(string $message, array $context = []): void
     {
         $this->record('error', $message, $context);
     }
 
-    /**
-     * @inheritDoc
-     */
     public function warning(string $message, array $context = []): void
     {
         $this->record('warning', $message, $context);
     }
 
-    /**
-     * @inheritDoc
-     */
     public function info(string $message, array $context = []): void
     {
         $this->record('info', $message, $context);
     }
 
-    /**
-     * @inheritDoc
-     */
     public function debug(string $message, array $context = []): void
     {
         $this->record('debug', $message, $context);
@@ -66,7 +54,7 @@ final class SpyLogger implements LoggerInterface
     public function getLogsByLevel(string $level): array
     {
         return array_values(
-            array_filter($this->logs, fn(array $log) => $log['level'] === $level),
+            array_filter($this->logs, static fn (array $log) => $log['level'] === $level),
         );
     }
 
@@ -75,7 +63,7 @@ final class SpyLogger implements LoggerInterface
      */
     public function hasLogContaining(string $needle, ?string $level = null): bool
     {
-        $logs = $level !== null ? $this->getLogsByLevel($level) : $this->logs;
+        $logs = null !== $level ? $this->getLogsByLevel($level) : $this->logs;
 
         foreach ($logs as $log) {
             if (str_contains($log['message'], $needle)) {
@@ -91,7 +79,7 @@ final class SpyLogger implements LoggerInterface
      */
     public function countByLevel(string $level): int
     {
-        return count($this->getLogsByLevel($level));
+        return \count($this->getLogsByLevel($level));
     }
 
     /**

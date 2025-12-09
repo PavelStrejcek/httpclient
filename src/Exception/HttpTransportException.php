@@ -18,7 +18,7 @@ final class HttpTransportException extends HttpClientException
     public static function connectionFailed(string $url, ?\Throwable $previous = null): self
     {
         return new self(
-            message: sprintf('Failed to connect to %s', $url),
+            message: \sprintf('Failed to connect to %s', $url),
             code: 0,
             previous: $previous,
         );
@@ -30,7 +30,7 @@ final class HttpTransportException extends HttpClientException
     public static function timeout(string $url, int $timeoutSeconds): self
     {
         return new self(
-            message: sprintf('Request to %s timed out after %d seconds', $url, $timeoutSeconds),
+            message: \sprintf('Request to %s timed out after %d seconds', $url, $timeoutSeconds),
             code: 0,
         );
     }
@@ -41,7 +41,7 @@ final class HttpTransportException extends HttpClientException
     public static function dnsResolutionFailed(string $host): self
     {
         return new self(
-            message: sprintf('Failed to resolve DNS for host: %s', $host),
+            message: \sprintf('Failed to resolve DNS for host: %s', $host),
             code: 0,
         );
     }

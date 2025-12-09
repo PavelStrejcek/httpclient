@@ -31,6 +31,7 @@ final class MockTransport implements HttpTransportInterface
     public function queueResponse(HttpResponse $response): self
     {
         $this->responses[] = $response;
+
         return $this;
     }
 
@@ -40,6 +41,7 @@ final class MockTransport implements HttpTransportInterface
     public function queueException(HttpTransportException $exception): self
     {
         $this->responses[] = $exception;
+
         return $this;
     }
 
@@ -53,19 +55,17 @@ final class MockTransport implements HttpTransportInterface
         foreach ($responses as $response) {
             $this->responses[] = $response;
         }
+
         return $this;
     }
 
-    /**
-     * @inheritDoc
-     */
     public function send(HttpRequest $request): HttpResponse
     {
         $this->sentRequests[] = $request;
 
         if (!isset($this->responses[$this->callIndex])) {
             throw new \RuntimeException(
-                sprintf('No response queued for request #%d', $this->callIndex + 1),
+                \sprintf('No response queued for request #%d', $this->callIndex + 1),
             );
         }
 
@@ -93,7 +93,7 @@ final class MockTransport implements HttpTransportInterface
      */
     public function getRequestCount(): int
     {
-        return count($this->sentRequests);
+        return \count($this->sentRequests);
     }
 
     /**
