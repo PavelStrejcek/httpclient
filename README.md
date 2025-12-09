@@ -27,13 +27,13 @@ A simple, extensible HTTP client for PHP 8.5 with automatic retry logic and comp
 cd httpclient
 ```
 
-3. Start the Docker container:
+2. Start the Docker container:
 
 ```bash
 docker compose up -d
 ```
 
-4. Install dependencies:
+3. Install dependencies:
 
 ```bash
 docker compose exec php composer install
