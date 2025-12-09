@@ -27,19 +27,13 @@ A simple, extensible HTTP client for PHP 8.5 with automatic retry logic and comp
 cd httpclient
 ```
 
-3. Copy .env.example:
-
-```bash
-cp .env.example .env
-```
-
-4. Start the Docker container:
+3. Start the Docker container:
 
 ```bash
 docker compose up -d
 ```
 
-5. Install dependencies:
+4. Install dependencies:
 
 ```bash
 docker compose exec php composer install
@@ -117,6 +111,7 @@ if ($response->isSuccessful()) {
 #### `HttpClient`
 
 The main entry point. Orchestrates:
+
 - Request building with base URL and default headers
 - Retry logic delegation to the retry strategy
 - Error logging at all stages
@@ -185,6 +180,7 @@ delay = min(baseDelay × (multiplier ^ attemptNumber) + jitter, maxDelay)
 ```
 
 Example with defaults (base=100ms, multiplier=2):
+
 - Attempt 1: ~200ms
 - Attempt 2: ~400ms
 - Attempt 3: ~800ms
@@ -215,14 +211,14 @@ $strategy = ExponentialBackoffStrategy::conservative();       // Fewer attempts,
 
 By default, the following HTTP status codes trigger a retry:
 
-| Code | Description |
-|------|-------------|
-| 408  | Request Timeout |
-| 429  | Too Many Requests |
+| Code | Description           |
+| ---- | --------------------- |
+| 408  | Request Timeout       |
+| 429  | Too Many Requests     |
 | 500  | Internal Server Error |
-| 502  | Bad Gateway |
-| 503  | Service Unavailable |
-| 504  | Gateway Timeout |
+| 502  | Bad Gateway           |
+| 503  | Service Unavailable   |
+| 504  | Gateway Timeout       |
 
 Non-retryable errors (4xx except 408, 429) will throw `HttpClientException` immediately.
 
@@ -240,6 +236,7 @@ $logger = new FileLogger(
 ```
 
 Log format:
+
 ```
 [2024-01-15 10:30:45.123456] [ERROR] HTTP request failed with non-retryable error {"method":"POST","url":"https://api.example.com/users","status_code":400}
 ```
@@ -288,6 +285,7 @@ $transport = new CurlTransport(
 ```
 
 Features:
+
 - Supports POST, PUT, PATCH, DELETE methods
 - Automatic JSON body encoding
 - Response header parsing
@@ -370,10 +368,10 @@ try {
 
 The project includes two test suites:
 
-| Suite | Tests | Description |
-|-------|-------|-------------|
-| **Unit** | 81 | Fast tests using mocked dependencies |
-| **Functional** | 16 | Integration tests against local httpbin service |
+| Suite          | Tests | Description                                     |
+| -------------- | ----- | ----------------------------------------------- |
+| **Unit**       | 81    | Fast tests using mocked dependencies            |
+| **Functional** | 16    | Integration tests against local httpbin service |
 
 ### Running Tests with Docker
 
@@ -405,6 +403,7 @@ composer test
 ### Local httpbin Service
 
 Functional tests use a local httpbin Docker container instead of the public httpbin.org service. This ensures:
+
 - Reliable test execution without external dependencies
 - Faster test runs
 - No rate limiting issues
