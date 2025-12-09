@@ -581,10 +581,11 @@ try {
 ├── docker/
 │   └── php/
 │       └── Dockerfile                    # PHP 8.5 container
+├── .php-cs-fixer.dist.php                # PHP CS Fixer configuration
+├── phpstan.neon                          # PHPStan configuration
 ├── docker-compose.yml
 ├── composer.json
 ├── phpunit.xml
-├── .env.example
 ├── LICENSE
 └── README.md
 ```
