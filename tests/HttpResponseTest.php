@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace HttpClient\Tests;
+namespace BrainWeb\HttpClient\Tests;
 
-use HttpClient\Http\HttpResponse;
+use BrainWeb\HttpClient\Http\HttpResponse;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;

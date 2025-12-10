@@ -2,10 +2,10 @@
 
 require_once 'vendor/autoload.php';
 
-use HttpClient\Http\HttpClient;
-use HttpClient\Logger\FileLogger;
-use HttpClient\Retry\ExponentialBackoffStrategy;
-use HttpClient\Transport\CurlTransport;
+use BrainWeb\HttpClient\Http\HttpClient;
+use BrainWeb\HttpClient\Logger\FileLogger;
+use BrainWeb\HttpClient\Retry\ExponentialBackoffStrategy;
+use BrainWeb\HttpClient\Transport\CurlTransport;
 
 // Create the client with included cURL transport
 $client = new HttpClient(

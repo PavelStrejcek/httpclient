@@ -1,8 +1,25 @@
 {
-    "name": "httpclient/http-client",
+    "name": "brainweb/http-client",
     "description": "A simple HTTP client with retry logic and error logging",
+    "keywords": [
+        "http",
+        "client",
+        "retry",
+        "backoff",
+        "resilience"
+    ],
     "type": "library",
     "license": "MIT",
+    "authors": [
+        {
+            "name": "Pavel Strejcek",
+            "email": "application@brainweb.cz"
+        }
+    ],
+    "support": {
+        "issues": "https://github.com/PavelStrejcek/http-client/issues",
+        "source": "https://github.com/PavelStrejcek/http-client"
+    },
     "require": {
         "php": "^8.5"
     },
@@ -13,19 +30,32 @@
     },
     "autoload": {
         "psr-4": {
-            "HttpClient\\": "src/"
+            "BrainWeb\\HttpClient\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "HttpClient\\Tests\\": "tests/"
+            "BrainWeb\\HttpClient\\Tests\\": "tests/"
         }
     },
     "config": {
         "sort-packages": true
     },
     "scripts": {
-        "test": "phpunit",
-        "test-coverage": "phpunit --coverage-html coverage"
+        "test:unit": "phpunit --testsuite Unit",
+        "test:functional": "phpunit --group functional",
+        "test": [
+            "@test:unit",
+            "@test:functional"
+        ],
+        "test:coverage": "phpunit --coverage-html coverage",
+        "cs:check": "php-cs-fixer fix --dry-run --diff",
+        "cs:fix": "php-cs-fixer fix",
+        "stan": "phpstan analyse --memory-limit=512M",
+        "all": [
+            "@cs:check",
+            "@stan",
+            "@test"
+        ]
     }
 }

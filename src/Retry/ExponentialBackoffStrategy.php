@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace HttpClient\Retry;
+namespace BrainWeb\HttpClient\Retry;
 
-use HttpClient\Contracts\RetryStrategyInterface;
-use HttpClient\Http\HttpResponse;
+use BrainWeb\HttpClient\Contracts\RetryStrategyInterface;
+use BrainWeb\HttpClient\Http\HttpResponse;
 
 /**
  * Implements exponential backoff retry strategy.

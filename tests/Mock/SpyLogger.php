@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace HttpClient\Tests\Mock;
+namespace BrainWeb\HttpClient\Tests\Mock;
 
-use HttpClient\Contracts\LoggerInterface;
+use BrainWeb\HttpClient\Contracts\LoggerInterface;
 
 /**
  * Spy logger for testing purposes.

@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace HttpClient\Contracts;
+namespace BrainWeb\HttpClient\Contracts;
 
-use HttpClient\Http\HttpResponse;
+use BrainWeb\HttpClient\Http\HttpResponse;
 
 /**
  * Interface for retry strategy implementations.

@@ -4,13 +4,13 @@ FROM php:8.5-fpm-alpine
 
 # Install system dependencies
 RUN set -eux; \
-    apk add --no-cache \
-        bash \
-        icu-dev \
-        libzip-dev \
-        zlib-dev \
-        curl \
-        git
+  apk add --no-cache \
+  bash \
+  icu-dev \
+  libzip-dev \
+  zlib-dev \
+  curl \
+  git
 
 # Install PHP extensions with parallel compilation
 # Note: mbstring and opcache are bundled in PHP 8.5 and enabled by default
@@ -18,13 +18,13 @@ RUN docker-php-ext-install -j"$(nproc)" pdo_mysql intl zip
 
 # Enable recommended opcache settings
 RUN set -eux; \
-    { \
-      echo "opcache.enable=1"; \
-      echo "opcache.memory_consumption=256"; \
-      echo "opcache.max_accelerated_files=20000"; \
-      echo "opcache.validate_timestamps=1"; \
-      echo "opcache.revalidate_freq=0"; \
-    } > /usr/local/etc/php/conf.d/opcache-recommended.ini
+  { \
+  echo "opcache.enable=1"; \
+  echo "opcache.memory_consumption=256"; \
+  echo "opcache.max_accelerated_files=20000"; \
+  echo "opcache.validate_timestamps=1"; \
+  echo "opcache.revalidate_freq=0"; \
+  } > /usr/local/etc/php/conf.d/opcache-recommended.ini
 
 # Install Composer
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer

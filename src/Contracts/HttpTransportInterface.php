@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace HttpClient\Contracts;
+namespace BrainWeb\HttpClient\Contracts;
 
-use HttpClient\Exception\HttpTransportException;
-use HttpClient\Http\HttpRequest;
-use HttpClient\Http\HttpResponse;
+use BrainWeb\HttpClient\Exception\HttpTransportException;
+use BrainWeb\HttpClient\Http\HttpRequest;
+use BrainWeb\HttpClient\Http\HttpResponse;
 
 /**
  * Interface for HTTP transport implementations.

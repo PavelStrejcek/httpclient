@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace HttpClient\Tests\Mock;
+namespace BrainWeb\HttpClient\Tests\Mock;
 
-use HttpClient\Contracts\HttpTransportInterface;
-use HttpClient\Exception\HttpTransportException;
-use HttpClient\Http\HttpRequest;
-use HttpClient\Http\HttpResponse;
+use BrainWeb\HttpClient\Contracts\HttpTransportInterface;
+use BrainWeb\HttpClient\Exception\HttpTransportException;
+use BrainWeb\HttpClient\Http\HttpRequest;
+use BrainWeb\HttpClient\Http\HttpResponse;
 
 /**
  * Mock HTTP transport for testing purposes.

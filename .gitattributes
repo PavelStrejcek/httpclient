@@ -1,0 +1,11 @@
+# Composer archive ignores
+/tests              export-ignore
+/docker             export-ignore
+/example.php        export-ignore
+/.gitattributes     export-ignore
+/.gitignore         export-ignore
+/docker-compose.yml export-ignore
+/phpunit.xml        export-ignore
+/phpstan.neon       export-ignore
+/.php-cs-fixer.dist.php export-ignore
+/.github            export-ignore

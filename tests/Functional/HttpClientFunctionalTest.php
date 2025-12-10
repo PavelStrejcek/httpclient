@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace HttpClient\Tests\Functional;
+namespace BrainWeb\HttpClient\Tests\Functional;
 
-use HttpClient\Exception\HttpClientException;
-use HttpClient\Exception\HttpTransportException;
-use HttpClient\Exception\MaxRetriesExceededException;
-use HttpClient\Http\HttpClient;
-use HttpClient\Retry\ExponentialBackoffStrategy;
-use HttpClient\Tests\Mock\SpyLogger;
-use HttpClient\Transport\CurlTransport;
+use BrainWeb\HttpClient\Exception\HttpClientException;
+use BrainWeb\HttpClient\Exception\HttpTransportException;
+use BrainWeb\HttpClient\Exception\MaxRetriesExceededException;
+use BrainWeb\HttpClient\Http\HttpClient;
+use BrainWeb\HttpClient\Retry\ExponentialBackoffStrategy;
+use BrainWeb\HttpClient\Tests\Mock\SpyLogger;
+use BrainWeb\HttpClient\Transport\CurlTransport;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
@@ -30,7 +30,7 @@ use PHPUnit\Framework\TestCase;
 #[Group('functional')]
 final class HttpClientFunctionalTest extends TestCase
 {
-    private const string BASE_URL = 'http://httpbin';
+    private const string DEFAULT_BASE_URL = 'http://httpbin';
 
     private HttpClient $client;
     private SpyLogger $logger;
@@ -38,6 +38,8 @@ final class HttpClientFunctionalTest extends TestCase
     protected function setUp(): void
     {
         $this->logger = new SpyLogger();
+
+        $baseUrl = getenv('HTTPBIN_URL') ?: self::DEFAULT_BASE_URL;
 
         $this->client = new HttpClient(
             transport: new CurlTransport(timeout: 30),
@@ -47,7 +49,7 @@ final class HttpClientFunctionalTest extends TestCase
                 baseDelayMs: 100,
                 useJitter: false,
             ),
-            baseUrl: self::BASE_URL,
+            baseUrl: $baseUrl,
         );
     }
 
@@ -197,7 +199,7 @@ final class HttpClientFunctionalTest extends TestCase
                 baseDelayMs: 50,
                 useJitter: false,
             ),
-            baseUrl: self::BASE_URL,
+            baseUrl: getenv('HTTPBIN_URL') ?: self::DEFAULT_BASE_URL,
         );
 
         $this->expectException(MaxRetriesExceededException::class);
@@ -323,7 +325,7 @@ final class HttpClientFunctionalTest extends TestCase
             transport: new CurlTransport(timeout: 1),
             logger: $this->logger,
             retryStrategy: new ExponentialBackoffStrategy(maxAttempts: 1),
-            baseUrl: self::BASE_URL,
+            baseUrl: getenv('HTTPBIN_URL') ?: self::DEFAULT_BASE_URL,
         );
 
         // Transport exception is wrapped in MaxRetriesExceededException
@@ -352,7 +354,7 @@ final class HttpClientFunctionalTest extends TestCase
                 baseDelayMs: 50,
                 useJitter: false,
             ),
-            baseUrl: self::BASE_URL,
+            baseUrl: getenv('HTTPBIN_URL') ?: self::DEFAULT_BASE_URL,
         );
 
         try {
@@ -383,7 +385,7 @@ final class HttpClientFunctionalTest extends TestCase
                 baseDelayMs: 50,
                 useJitter: false,
             ),
-            baseUrl: self::BASE_URL,
+            baseUrl: getenv('HTTPBIN_URL') ?: self::DEFAULT_BASE_URL,
         );
 
         try {

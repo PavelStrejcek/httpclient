@@ -18,8 +18,16 @@ A simple, extensible HTTP client for PHP 8.5 with automatic retry logic and comp
 - Docker & Docker Compose (for development)
 
 ## Installation
+ 
+### Via Composer (Recommended for usage)
 
-### Using Docker (Recommended)
+```bash
+composer require brainweb/http-client
+```
+
+### For Development
+
+### Using Docker (Recommended for development)
 
 1. Clone the repository and navigate to the project directory:
 
@@ -54,10 +62,10 @@ composer install
 
 require_once 'vendor/autoload.php';
 
-use HttpClient\Http\HttpClient;
-use HttpClient\Logger\FileLogger;
-use HttpClient\Retry\ExponentialBackoffStrategy;
-use HttpClient\Transport\CurlTransport;
+use BrainWeb\HttpClient\Http\HttpClient;
+use BrainWeb\HttpClient\Logger\FileLogger;
+use BrainWeb\HttpClient\Retry\ExponentialBackoffStrategy;
+use BrainWeb\HttpClient\Transport\CurlTransport;
 
 // Create the client with included cURL transport
 $client = new HttpClient(
@@ -189,7 +197,7 @@ Example with defaults (base=100ms, multiplier=2):
 ### Configuration
 
 ```php
-use HttpClient\Retry\ExponentialBackoffStrategy;
+use BrainWeb\HttpClient\Retry\ExponentialBackoffStrategy;
 
 // Custom configuration
 $strategy = new ExponentialBackoffStrategy(
@@ -227,7 +235,7 @@ Non-retryable errors (4xx except 408, 429) will throw `HttpClientException` imme
 ### File Logger
 
 ```php
-use HttpClient\Logger\FileLogger;
+use BrainWeb\HttpClient\Logger\FileLogger;
 
 $logger = new FileLogger(
     filePath: '/var/log/http-client.log',
@@ -246,7 +254,7 @@ Log format:
 For testing or when logging is not needed:
 
 ```php
-use HttpClient\Logger\NullLogger;
+use BrainWeb\HttpClient\Logger\NullLogger;
 
 $logger = new NullLogger();
 ```
@@ -256,7 +264,7 @@ $logger = new NullLogger();
 Implement `LoggerInterface`:
 
 ```php
-use HttpClient\Contracts\LoggerInterface;
+use BrainWeb\HttpClient\Contracts\LoggerInterface;
 
 class DatabaseLogger implements LoggerInterface
 {
@@ -276,7 +284,7 @@ class DatabaseLogger implements LoggerInterface
 The library includes a production-ready cURL transport:
 
 ```php
-use HttpClient\Transport\CurlTransport;
+use BrainWeb\HttpClient\Transport\CurlTransport;
 
 $transport = new CurlTransport(
     timeout: 30,      // Connection timeout in seconds
@@ -299,10 +307,10 @@ You can implement `HttpTransportInterface` for other HTTP libraries (Guzzle, Sym
 ```php
 <?php
 
-use HttpClient\Contracts\HttpTransportInterface;
-use HttpClient\Exception\HttpTransportException;
-use HttpClient\Http\HttpRequest;
-use HttpClient\Http\HttpResponse;
+use BrainWeb\HttpClient\Contracts\HttpTransportInterface;
+use BrainWeb\HttpClient\Exception\HttpTransportException;
+use BrainWeb\HttpClient\Http\HttpRequest;
+use BrainWeb\HttpClient\Http\HttpResponse;
 
 final class GuzzleTransport implements HttpTransportInterface
 {
@@ -343,8 +351,8 @@ HttpClientException (base)
 ### Handling Errors
 
 ```php
-use HttpClient\Exception\HttpClientException;
-use HttpClient\Exception\MaxRetriesExceededException;
+use BrainWeb\HttpClient\Exception\HttpClientException;
+use BrainWeb\HttpClient\Exception\MaxRetriesExceededException;
 
 try {
     $response = $client->post('/users', ['name' => 'John']);
@@ -459,8 +467,8 @@ docker compose exec php ./vendor/bin/phpstan analyse --memory-limit=512M
 ### Using Mock Transport in Tests
 
 ```php
-use HttpClient\Tests\Mock\MockTransport;
-use HttpClient\Tests\Mock\SpyLogger;
+use BrainWeb\HttpClient\Tests\Mock\MockTransport;
+use BrainWeb\HttpClient\Tests\Mock\SpyLogger;
 
 $transport = new MockTransport();
 $logger = new SpyLogger();
@@ -485,12 +493,12 @@ $this->assertTrue($logger->hasLogContaining('HTTP request failed', 'warning'));
 
 require_once 'vendor/autoload.php';
 
-use HttpClient\Http\HttpClient;
-use HttpClient\Logger\FileLogger;
-use HttpClient\Retry\ExponentialBackoffStrategy;
-use HttpClient\Transport\CurlTransport;
-use HttpClient\Exception\MaxRetriesExceededException;
-use HttpClient\Exception\HttpClientException;
+use BrainWeb\HttpClient\Http\HttpClient;
+use BrainWeb\HttpClient\Logger\FileLogger;
+use BrainWeb\HttpClient\Retry\ExponentialBackoffStrategy;
+use BrainWeb\HttpClient\Transport\CurlTransport;
+use BrainWeb\HttpClient\Exception\MaxRetriesExceededException;
+use BrainWeb\HttpClient\Exception\HttpClientException;
 
 // 1. Create transport
 $transport = new CurlTransport(timeout: 30);

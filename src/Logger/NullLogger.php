@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace HttpClient\Logger;
+namespace BrainWeb\HttpClient\Logger;
 
-use HttpClient\Contracts\LoggerInterface;
+use BrainWeb\HttpClient\Contracts\LoggerInterface;
 
 /**
  * Null logger implementation that discards all log messages.

@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace HttpClient\Exception;
+namespace BrainWeb\HttpClient\Exception;
 
-use HttpClient\Http\HttpResponse;
+use BrainWeb\HttpClient\Http\HttpResponse;
 
 /**
  * Base exception for HTTP client errors.

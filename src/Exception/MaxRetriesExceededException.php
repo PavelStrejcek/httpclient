@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace HttpClient\Exception;
+namespace BrainWeb\HttpClient\Exception;
 
-use HttpClient\Http\HttpResponse;
+use BrainWeb\HttpClient\Http\HttpResponse;
 
 /**
  * Exception thrown when the maximum number of retry attempts is exceeded.

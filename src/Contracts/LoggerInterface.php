@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace HttpClient\Contracts;
+namespace BrainWeb\HttpClient\Contracts;
 
 /**
  * PSR-3 inspired logger interface.

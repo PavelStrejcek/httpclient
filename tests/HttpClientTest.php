@@ -2,16 +2,16 @@
 
 declare(strict_types=1);
 
-namespace HttpClient\Tests;
+namespace BrainWeb\HttpClient\Tests;
 
-use HttpClient\Exception\HttpClientException;
-use HttpClient\Exception\HttpTransportException;
-use HttpClient\Exception\MaxRetriesExceededException;
-use HttpClient\Http\HttpClient;
-use HttpClient\Http\HttpResponse;
-use HttpClient\Retry\ExponentialBackoffStrategy;
-use HttpClient\Tests\Mock\MockTransport;
-use HttpClient\Tests\Mock\SpyLogger;
+use BrainWeb\HttpClient\Exception\HttpClientException;
+use BrainWeb\HttpClient\Exception\HttpTransportException;
+use BrainWeb\HttpClient\Exception\MaxRetriesExceededException;
+use BrainWeb\HttpClient\Http\HttpClient;
+use BrainWeb\HttpClient\Http\HttpResponse;
+use BrainWeb\HttpClient\Retry\ExponentialBackoffStrategy;
+use BrainWeb\HttpClient\Tests\Mock\MockTransport;
+use BrainWeb\HttpClient\Tests\Mock\SpyLogger;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;

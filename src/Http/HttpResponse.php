@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace HttpClient\Http;
+namespace BrainWeb\HttpClient\Http;
 
 /**
  * Represents an HTTP response.

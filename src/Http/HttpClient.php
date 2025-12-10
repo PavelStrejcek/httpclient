@@ -2,16 +2,16 @@
 
 declare(strict_types=1);
 
-namespace HttpClient\Http;
+namespace BrainWeb\HttpClient\Http;
 
-use HttpClient\Contracts\HttpTransportInterface;
-use HttpClient\Contracts\LoggerInterface;
-use HttpClient\Contracts\RetryStrategyInterface;
-use HttpClient\Exception\HttpClientException;
-use HttpClient\Exception\HttpTransportException;
-use HttpClient\Exception\MaxRetriesExceededException;
-use HttpClient\Logger\NullLogger;
-use HttpClient\Retry\ExponentialBackoffStrategy;
+use BrainWeb\HttpClient\Contracts\HttpTransportInterface;
+use BrainWeb\HttpClient\Contracts\LoggerInterface;
+use BrainWeb\HttpClient\Contracts\RetryStrategyInterface;
+use BrainWeb\HttpClient\Exception\HttpClientException;
+use BrainWeb\HttpClient\Exception\HttpTransportException;
+use BrainWeb\HttpClient\Exception\MaxRetriesExceededException;
+use BrainWeb\HttpClient\Logger\NullLogger;
+use BrainWeb\HttpClient\Retry\ExponentialBackoffStrategy;
 
 /**
  * HTTP client with retry logic and error logging.

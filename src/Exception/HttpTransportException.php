@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace HttpClient\Exception;
+namespace BrainWeb\HttpClient\Exception;
 
 /**
  * Exception thrown when the HTTP transport layer fails.
